@@ -1,15 +1,19 @@
-const willGetYouDog = new Promise((resolve, reject) =>{
-    const rand = Math.random();
-    if(rand < 0.5){
-        resolve();
-    } else{ 
-        reject();
-    }
-})
+const makeDogPromisse = () => {
+    return new Promise((resolve, reject) =>{
+        setTimeout(() => {
+            const rand = Math.random();
+            if(rand < 0.5){
+                resolve();
+            } else{ 
+                reject();
+            }
+        }, 5000);  
+    }); 
+};
 
-willGetYouDog.then(() => {
+makeDogPromisse().then(() => {
     console.log('You got a dog');
-});
-willGetYouDog.catch(() => {
+}).catch(() => {
     console.log('You did not get a dog');
 });
+
