@@ -121,6 +121,10 @@ const movieTemplate = (movieDetail) => {
         </div>
       </div>    
     </article>
+    <article class="notification is-link">
+    <p class="title">${movieDetail.Actors}</p>
+    <p class="subtitle">Atores</p>
+    </article>
     <article data-value=${awards} class="notification is-primary">
     <p class="title">${movieDetail.Awards}</p>
     <p class="subtitle">Awards</p>
