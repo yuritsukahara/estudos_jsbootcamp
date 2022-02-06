@@ -1,4 +1,5 @@
 const express = require("express");
+const { check, validationResult } = require("express-validator");
 const usersRepo = require("../../repositories/users");
 const router = express.Router();
 const signupTemplate = require("../../views/admin/auth/signup");
@@ -8,26 +9,46 @@ router.get("/signup", (req, res) => {
 	res.send(signupTemplate({ req }));
 });
 
-router.post("/signup", async (req, res) => {
-	const { email, password, passwordConfirmation } = req.body;
+router.post(
+	"/signup",
+	[
+		check("email")
+			.trim()
+			.normalizeEmail()
+			.isEmail()
+			.withMessage("Must be a valid email")
+			.custom(async (email) => {
+				const existingUser = await usersRepo.getOneBy({ email });
+				if (existingUser) {
+					throw new Error("Email in use");
+				}
+			}),
+		check("password")
+			.trim()
+			.isLength({ min: 6, max: 20 })
+			.withMessage("Must be between 4 and 20 characters"),
+		check("passwordConfirmation")
+			.trim()
+			.isLength({ min: 6, max: 20 })
+			.withMessage("Must be between 4 and 20 characters")
+			.custom((passwordConfirmation, { req }) => {
+				if (req.body.password !== passwordConfirmation) {
+					throw new Error("Passwords must match");
+				}
+			}),
+	],
+	async (req, res) => {
+		const errors = validationResult(req);
+		console.log("errors :>> ", errors);
+		const { email, password, passwordConfirmation } = req.body;
 
-	const existingUser = await usersRepo.getOneBy({ email });
-	if (existingUser) {
-		return res.send("Email in use");
+		const user = await usersRepo.create({ email, password });
+
+		req.session.userId = user.id;
+
+		res.send("Account created!!!");
 	}
-
-	if (password !== passwordConfirmation) {
-		return res.send("Passwords must match");
-	}
-
-	// Create a user in our user repo to represent this person
-	const user = await usersRepo.create({ email, password });
-
-	// Store the id of that user inside the users cookie
-	req.session.userId = user.id;
-
-	res.send("Account created!!!");
-});
+);
 
 router.get("/signout", (req, res) => {
 	req.session = null;
