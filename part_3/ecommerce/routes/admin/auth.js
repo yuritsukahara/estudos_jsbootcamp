@@ -23,7 +23,7 @@ router.post(
 	[requireEmail, requirePassword, requirePasswordConfirmation],
 	async (req, res) => {
 		const errors = validationResult(req);
-
+		console.log('errors :>> ', errors);
 		if (!errors.isEmpty()) {
 			return res.send(signupTemplate({ req, errors }));
 		}
