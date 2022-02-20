@@ -16,7 +16,7 @@ app.use(
 app.use(authRouter);
 app.use(productsRouter);
 
-const port = 3002;
+const port = 3001;
 app.listen(port, () => {
 	console.log('Listening');
 	console.log(`http://localhost:${port}`);
