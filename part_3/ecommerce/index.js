@@ -4,6 +4,7 @@ const cookieSession = require('cookie-session');
 const authRouter = require('./routes/admin/auth');
 const AdminProductsRouter = require('./routes/admin/products');
 const productsRouter = require('./routes/products');
+const cartsRouter = require('./routes/carts')
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(
 app.use(authRouter);
 app.use(AdminProductsRouter);
 app.use(productsRouter);
+app.use(cartsRouter);
 
 
 const port = 3003;
